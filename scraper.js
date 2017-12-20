@@ -9,7 +9,7 @@ var db = new sqlite3.Database("data.sqlite");
 
 //db.each("SELECT dateModified FROM data ORDER BY dateModified DESC LIMIT 1", function(err, timeStart) {
 //var start =  "2017-01-01T10:18:57.452368+03:00"
-var start =  "2017-06-01T12:12:17.059901+03:00"
+var start =  "2017-09-03T12:12:17.059901+03:00"
 //var end  = formatTime(new Date());
 //var end  = "2017-01-03"
 var p=0; var p2=0;
@@ -48,9 +48,12 @@ client.request({url: 'https://public.api.openprocurement.org/api/2.3/contracts?o
 	var dateSigned = data.getJSON().data.dateSigned;
 	var amount = data.getJSON().data.value.amount;	
 	var name = data.getJSON().data.procuringEntity.name;	
+	var regionBuyer = data.getJSON().data.procuringEntity.address.region;	
+	var edrBuyer = data.getJSON().data.procuringEntity.identifier.id;	
 	var edr = data.getJSON().data.suppliers[0].identifier.id;	
 	var suppliers =  data.getJSON().data.suppliers[0].name;	
 	var region =  data.getJSON().data.suppliers[0].address.region;	
+	var contactPoint =  data.getJSON().data.suppliers[0].contactPoint.email;	
 	var description = data.getJSON().data.items[0].description.toLowerCase();	
 	var cpv = data.getJSON().data.items[0].classification.id;	
 	
@@ -137,12 +140,13 @@ client.request({url: 'https://public.api.openprocurement.org/api/2.3/contracts?o
 		console.log(tender_id+" "+procurementMethodType+" "+complaints+" "+amcuStatus+" "+amcuDescription)
 	}
 	*/
+	console.log(edrBuyer+" "+contactPoint)
 	//////////tenders AND db//////////////	
 	
 db.serialize(function() {
-db.run("CREATE TABLE IF NOT EXISTS data (dateModified TEXT,dateSigned TEXT,contractID TEXT,name TEXT,suppliers TEXT,edr TEXT,region TEXT,cpv TEXT,description TEXT,amount INT,save INT,numberOfBids INT,bids INT,lots INT,awards INT,changeLength INT,documents INT,documentsChange TEXT,items INT,unit TEXT,quantity INT,questions INT,complaints INT,amcuStatus TEXT,amcuDescription TEXT)");
-var statement = db.prepare("INSERT INTO data VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-statement.run(dateModified.replace(/T.*/, ""),dateSigned.replace(/T.*/, ""),contractID,name,suppliers,edr,region,cpv,description,amount,save,numberOfBids,bids,lots,awards,changeLength,documents,documentsChange,items,unit,quantity,questions,complaints,amcuStatus,amcuDescription);
+db.run("CREATE TABLE IF NOT EXISTS data (dateModified TEXT,dateSigned TEXT,contractID TEXT,name TEXT,edrBuyer TEXT,regionBuyer TEXT,suppliers TEXT,edr TEXT,region TEXT,contactPoint TEXT,cpv TEXT,description TEXT,amount INT,save INT,numberOfBids INT,bids INT,lots INT,awards INT,changeLength INT,documents INT,documentsChange TEXT,items INT,unit TEXT,quantity INT,questions INT,complaints INT,amcuStatus TEXT,amcuDescription TEXT)");
+var statement = db.prepare("INSERT INTO data VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+statement.run(dateModified.replace(/T.*/, ""),dateSigned.replace(/T.*/, ""),contractID,name,edrBuyer,regionBuyer,suppliers,edr,region,contactPoint,cpv,description,amount,save,numberOfBids,bids,lots,awards,changeLength,documents,documentsChange,items,unit,quantity,questions,complaints,amcuStatus,amcuDescription);
 statement.finalize();
 });
 	
@@ -164,7 +168,7 @@ statement.finalize();
 	})
 	.then(function () {	
 	
-	if (p<10){setTimeout(function() {piv ();},20000);}		
+	if (p<5){setTimeout(function() {piv ();},15000);}		
 		else {
 			console.log("stop")
 			
