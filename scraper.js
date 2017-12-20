@@ -9,7 +9,7 @@ var db = new sqlite3.Database("data.sqlite");
 
 //db.each("SELECT dateModified FROM data ORDER BY dateModified DESC LIMIT 1", function(err, timeStart) {
 //var start =  "2017-01-01T10:18:57.452368+03:00"
-var start =  "2017-09-03T12:12:17.059901+03:00"
+var start =  "2017-06-01T12:12:17.059901+03:00"
 //var end  = formatTime(new Date());
 //var end  = "2017-01-03"
 var p=0; var p2=0;
@@ -140,7 +140,6 @@ client.request({url: 'https://public.api.openprocurement.org/api/2.3/contracts?o
 		console.log(tender_id+" "+procurementMethodType+" "+complaints+" "+amcuStatus+" "+amcuDescription)
 	}
 	*/
-	console.log(edrBuyer+" "+contactPoint)
 	//////////tenders AND db//////////////	
 	
 db.serialize(function() {
@@ -168,7 +167,7 @@ statement.finalize();
 	})
 	.then(function () {	
 	
-	if (p<5){setTimeout(function() {piv ();},15000);}		
+	if (p<100){setTimeout(function() {piv ();},15000);}		
 		else {
 			console.log("stop")
 			
